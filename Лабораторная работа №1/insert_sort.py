@@ -28,15 +28,21 @@ def measure_time(func, data):
     return f"{duration:.10f}"
 
 
-# Замер пространственной сложности
+# Замер пространственной сложности (в МБ)
 import sys
 
+def deep_size(arr):
+    return sys.getsizeof(arr) + sum(sys.getsizeof(x) for x in arr)
+
 def measure_memory(func, data):
-    before = sys.getsizeof(data)
+    before = deep_size(data)
     result = func(data)
-    after = sys.getsizeof(result)
+    after = deep_size(result)
     
-    return after - before
+    # разница + перевод в МБ
+    diff = abs(after - before) / (1024 * 1024)
+
+    return f"{diff:.6f} MB"
 
 
 # Генерация данных
@@ -48,7 +54,7 @@ def generate_array(n):
 
 # Эксперимент
 if __name__ == '__main__':
-    sizes = [100, 500, 1000, 2000]
+    sizes = [100, 1000, 5000, 10000]
 
     for n in sizes:
         arr = generate_array(n)
